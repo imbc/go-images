@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"io"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func HelloHandler(writer http.ResponseWriter, request *http.Request) {

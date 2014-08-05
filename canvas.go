@@ -1,15 +1,15 @@
 package main
 
 import (
-	//"bytes"
-	//"encoding/base64"
+	"bytes"
+	"encoding/base64"
 	"image"
 	"image/color"
-	//"image/draw"
-	//"image/png"
-	//"log"
+	"image/draw"
+	"image/png"
+	"log"
 	"math"
-	//"os"
+	"os"
 )
 
 type Canvas struct {
@@ -22,13 +22,36 @@ func NewCanvas(r image.Rectangle) *Canvas {
 	return canvas
 }
 
-//func (c Canvas) Bounds() {
-//	return c
-//}
+func (c Canvas) Clone() *Canvas {
+	clone := NewCanvas(c.Bounds())
+	copy(clone.Pix, c.Pix)
+	return clone
+}
 
-//func (c Canvas) Size() {
-//	return c.x, c.y
-//}
+func CanvasFromFile(filename string) *Canvas {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	m, _, err := image.Decode(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	canvas := NewCanvas(m.Bounds())
+	draw.Draw(canvas, m.Bounds(), m, image.ZP, draw.Src)
+	return canvas
+}
+
+func (c *Canvas) ToBase64() string {
+	imgBuf := new(bytes.Buffer)
+	imgEncoder := base64.NewEncoder(base64.StdEncoding, imgBuf)
+	png.Encode(imgEncoder, c)
+	imgEncoder.Close()
+	return imgBuf.String()
+}
 
 func (c Canvas) DrawGradient() {
 	size := c.Bounds().Size()
@@ -84,12 +107,6 @@ func (c Canvas) DrawSpiral(color color.RGBA, from Vector) {
 		dir.Scale(0.999)
 		last = next
 	}
-}
-
-func (c Canvas) Clone() *Canvas {
-	clone := NewCanvas(c.Bounds())
-	copy(clone.Pix, c.Pix)
-	return clone
 }
 
 func (c Canvas) Blur(radius int, weight WeightFunction) {

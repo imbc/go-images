@@ -1,10 +1,11 @@
 package main
 
 import (
-	"code.google.com/p/go.net/websocket"
-	"github.com/gorilla/mux"
 	"io"
 	"net/http"
+
+	"code.google.com/p/go.net/websocket"
+	"github.com/gorilla/mux"
 )
 
 func WebsocketHandler(ws *websocket.Conn) {

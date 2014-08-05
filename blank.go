@@ -15,7 +15,7 @@ func main() {
 		os.Mkdir(dirName, 0755)
 		return
 	}
-	outFilename := dirName + "/canvas.png"
+	outFilename := dirName + "/blank.png"
 	outFile, err := os.Create(outFilename)
 	if err != nil {
 		log.Fatal(err)

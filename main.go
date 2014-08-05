@@ -2,7 +2,7 @@ package main
 
 import (
 	"image"
-	"image/color"
+	//"image/color"
 	"image/png"
 	"log"
 	"os"

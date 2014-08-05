@@ -17,7 +17,7 @@ func main() {
 		os.Mkdir(dirName, 0755)
 		return
 	}
-	outFilename := dirName + "gradient.png"
+	outFilename := dirName + "/gradient.png"
 	outFile, err := os.Create(outFilename)
 	if err != nil {
 		log.Fatal(err)

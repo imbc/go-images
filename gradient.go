@@ -12,7 +12,12 @@ func main() {
 	width, height := 128, 128
 	m := image.NewRGBA(image.Rect(0, 0, width, height))
 	drawGradient(*m)
-	outFilename := "gradient.png"
+	dirName := "img"
+	if _, err := os.Stat(dirName); os.IsNotExist(err) {
+		os.Mkdir(dirName, 0755)
+		return
+	}
+	outFilename := dirName + "gradient.png"
 	outFile, err := os.Create(outFilename)
 	if err != nil {
 		log.Fatal(err)

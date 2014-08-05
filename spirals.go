@@ -5,7 +5,9 @@ import (
 	"image/color"
 	"image/png"
 	"log"
+	"math/rand"
 	"os"
+	"time"
 )
 
 func main() {
@@ -13,11 +15,17 @@ func main() {
 	canvas := NewCanvas(image.Rect(0, 0, width, height))
 	canvas.DrawGradient()
 
-	// Draw a series of lines from the top left corner to the bottom of the image
-	for x := 0; x < width; x += 8 {
-		canvas.DrawLine(color.RGBA{0, 0, 0, 255},
-			Vector{0.0, 0.0},
-			Vector{float64(x), float64(height)})
+	// Draw a set of spirals randomly over the image
+	rand.Seed(time.Now().UTC().UnixNano())
+	for i := 0; i < 100; i++ {
+		x := float64(width) * rand.Float64()
+		y := float64(height) * rand.Float64()
+		color := color.RGBA{uint8(rand.Intn(255)),
+			uint8(rand.Intn(255)),
+			uint8(rand.Intn(255)),
+			255}
+
+		canvas.DrawSpiral(color, Vector{x, y})
 	}
 
 	dirName := "img"
@@ -25,7 +33,7 @@ func main() {
 		os.Mkdir(dirName, 0755)
 		return
 	}
-	outFilename := dirName + "/lines.png"
+	outFilename := dirName + "/spirals.png"
 	outFile, err := os.Create(outFilename)
 	if err != nil {
 		log.Fatal(err)

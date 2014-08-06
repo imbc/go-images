@@ -11,6 +11,7 @@ type Node struct {
 	Peers    []*Node
 	Canvas   *Canvas
 	Power    uint8
+	Group    int
 }
 
 func NewNode(peers int, canvas *Canvas) *Node {

@@ -9,6 +9,8 @@ import (
 	"os"
 	"sort"
 	"time"
+
+	"github.com/lucasb-eyer/go-colorful"
 )
 
 func main() {
@@ -18,11 +20,17 @@ func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	// Create and populate the slice of Nodes
-	n := 50
-	peers := 6
+	n := 49
+	peers := 7
 	nodes := make([]*Node, n)
+	group := 0
 	for i := 0; i < n; i++ {
-		nodes[i] = NewNode(peers, canvas)
+		node := NewNode(peers, canvas)
+		if i%peers == 0 {
+			group++
+		}
+		node.Group = group
+		nodes[i] = node
 	}
 
 	//Randomly point Nodes at each other
@@ -46,24 +54,30 @@ func main() {
 	log.Print("Nodes sorted")
 
 	// Draw on circles representing nodes
+	log.Print("Drawing Nodes")
+	colors := colorful.FastHappyPalette(7)
 	for _, node := range nodes {
-		canvas.DrawCircle(color.RGBA{22, 131, 201, 255}, node.Position, 5)
+		c := colors[node.Group-1]
+		canvas.DrawCircle(color.RGBA{uint8(c.R * 255), uint8(c.G * 255), uint8(c.B * 255), 255}, node.Position, 5)
+
 	}
 	canvas.Blur(3, new(WeightFunctionDist))
 
 	// Draw connections between nodes
-	for _, node := range nodes {
-		for _, peer := range node.Peers[:3] {
-			canvas.DrawLine(color.RGBA{0, 0, 0, 10}, node.Position, peer.Position)
-		}
-	}
+	//log.Print("Drawing connection")
+	//for _, node := range nodes {
+	//	for _, peer := range node.Peers[:3] {
+	//		canvas.DrawLine(color.RGBA{0, 0, 0, 10}, node.Position, peer.Position)
+	//	}
+	//}
 
 	// Start sending messages between nodes
-	for i := 0; i < 1; i++ {
-		nodes[i].Power = 255
-		go nodes[i].Send()
-	}
-	time.Sleep(time.Second)
+	//log.Print("sending message")
+	//for i := 0; i < 1; i++ {
+	//	nodes[i].Power = 255
+	//	go nodes[i].Send()
+	//}
+	//time.Sleep(time.Second)
 
 	// Write out image
 	dirName := "img"
@@ -71,7 +85,7 @@ func main() {
 		os.Mkdir(dirName, 0755)
 		return
 	}
-	outFilename := dirName + "/nodes.png"
+	outFilename := dirName + "/travelling_salesman.png"
 	outFile, err := os.Create(outFilename)
 	if err != nil {
 		log.Fatal(err)
